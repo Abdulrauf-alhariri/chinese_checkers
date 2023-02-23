@@ -22,7 +22,7 @@ class GameBoard:
             'red': [],
             'green': [],
             'blue': [],
-            'yellow': [],
+            'orange': [],
             'white': [],
             'black': []
         }
@@ -95,10 +95,9 @@ class GameBoard:
     def game_players(self, nr_of_players):
         """"This function will be responsible for drawing the players corners of the game board """
 
-        players_colors = [['red', (235, 14, 14)], ['green', (38, 189, 53)], 
-        ['blue', (66, 78, 245)], ['yellow', (227, 223, 14)], ['white', (255, 255, 255)], ['black', (0,0,0)]]
+        players_colors = [['red', (235, 14, 14)], ['green', (38, 189, 53)],
+        ['blue', (66, 78, 245)], ['orange', (209, 103, 27)], ['white', (255, 255, 255)], ['black', (0,0,0)]]
         # Drawing the players positions according to the number of players
-
         if nr_of_players >= 2:
             for index in range(2):
                 player_color = players_colors[index]
@@ -122,13 +121,58 @@ class GameBoard:
                         self.players_positions[player_color[0]].append([start_pos_x, start_pos_y, player_color[0]])
 
                     nr_of_columns -= 1
-     
-        elif nr_of_players == (3, 4):
-            pass
-        else:
-            pass
 
-        print(self.players_positions)
+        if nr_of_players >= 3:
+            
+            print(self.hexagon_cords[2])
+            for index in range(2, 4):
+                player_color = players_colors[index]
+                # Initializing the original columns on the second row of the hexagon 
+                nr_of_columns = 1
+                hexagon_nr_of_columns = 8
+
+                for row in range(1, 5):
+                    total_nr_of_columns = hexagon_nr_of_columns + (nr_of_columns*2)
+                    # Getting the y coordinates
+                    if index == 2:
+                        start_pos_y = self.start_y - (self.radius*2+5)*row
+                    else:
+                        start_pos_y = self.start_y + (self.radius*2+5)*row
+
+                    for col in range(nr_of_columns):
+                        
+                        if index == 2:
+                            
+                            # Getting the x coordinates
+                            start_pos_x = self.start_x - ((((self.radius*2+5) * total_nr_of_columns)//2)
+                            + self.radius) + (self.radius*2+5)*col
+                            
+
+                            # Drawing the checkers
+                            pg.draw.circle(self.window, player_color[1],
+                            [start_pos_x, start_pos_y], self.radius, 0)
+                            
+                            # Adding the coordinates to the object
+                            self.players_positions[player_color[0]].append([start_pos_x, start_pos_y, player_color[0]])
+
+                        else:
+                            # Getting the x coordinates
+                            start_pos_x = (self.start_x + ((((self.radius*2+5) * total_nr_of_columns)//2)
+                            + self.radius) - (self.radius*2+5)*col) - 65
+                            print(start_pos_x)
+                            # Drawing the checkers
+                            pg.draw.circle(self.window, player_color[1],
+                            [start_pos_x, start_pos_y], self.radius, 0)
+                            
+                            # Adding the coordinates to the object
+                            self.players_positions[player_color[0]].append([start_pos_x, start_pos_y, player_color[0]])
+                    
+                    nr_of_columns += 1
+                    hexagon_nr_of_columns -= 1
+                    # print(total_nr_of_columns)
+                    
+        if nr_of_players >= 5:
+            pass
 
 
 
@@ -137,7 +181,7 @@ class GameBoard:
 
         self.window.fill((252, 207, 121, 255))
         self.game_board_hexagon()
-        self.game_players(2)
+        self.game_players(3)
 
         # The game loop will be running until the status of the run variable become false
         while self.run:
