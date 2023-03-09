@@ -17,6 +17,7 @@ class GameBoard:
     def __init__(self, window_width, window_heigt):
         self.run = True
         self.hexagon_cords = []
+        self.hexagon_color = (175, 179, 176)
         self.radius = 15
         self.players_positions = {
             'red': [],
@@ -68,14 +69,14 @@ class GameBoard:
                     forward_cords.append([start_pos_x, start_pos_y_forward])
 
 
-                    pg.draw.circle(self.window, (255, 255, 255),
+                    pg.draw.circle(self.window, self.hexagon_color,
                     [start_pos_x, start_pos_y_backward], self.radius, 0)
-                    pg.draw.circle(self.window, (255, 255, 255),
+                    pg.draw.circle(self.window, self.hexagon_color,
                     [start_pos_x, start_pos_y_forward], self.radius, 0)
 
                 else:
                     middle_cords.append([start_pos_x, self.start_y])
-                    pg.draw.circle(self.window, (255, 255,255),
+                    pg.draw.circle(self.window, self.hexagon_color,
                     [start_pos_x, self.start_y], self.radius, 0)
 
             # Checking if the lists are not empty before adding them to the global coordinate list
@@ -96,7 +97,8 @@ class GameBoard:
         """"This function will be responsible for drawing the players corners of the game board """
 
         players_colors = [['red', (235, 14, 14)], ['green', (38, 189, 53)],
-        ['blue', (66, 78, 245)], ['orange', (209, 103, 27)], ['white', (255, 255, 255)], ['black', (0,0,0)]]
+        ['blue', (66, 78, 245)], ['orange', (209, 103, 27)],
+        ['white', (255, 255, 255)], ['black', (0,0,0)]]
         # Drawing the players positions according to the number of players
         if nr_of_players >= 2:
             for index in range(2):
@@ -118,16 +120,16 @@ class GameBoard:
                         [start_pos_x, start_pos_y], self.radius, 0)
 
                         # Adding the coordinates to the object
-                        self.players_positions[player_color[0]].append([start_pos_x, start_pos_y, player_color[0]])
+                        self.players_positions[player_color[0]].append([start_pos_x,
+                        start_pos_y, player_color[0]])
 
                     nr_of_columns -= 1
 
         if nr_of_players >= 3:
-            
-            print(self.hexagon_cords[2])
+
             for index in range(2, 4):
                 player_color = players_colors[index]
-                # Initializing the original columns on the second row of the hexagon 
+                # Initializing the original columns on the second row of the hexagon
                 nr_of_columns = 1
                 hexagon_nr_of_columns = 8
 
@@ -140,39 +142,87 @@ class GameBoard:
                         start_pos_y = self.start_y + (self.radius*2+5)*row
 
                     for col in range(nr_of_columns):
-                        
+
                         if index == 2:
-                            
+
                             # Getting the x coordinates
-                            start_pos_x = self.start_x - ((((self.radius*2+5) * total_nr_of_columns)//2)
-                            + self.radius) + (self.radius*2+5)*col
-                            
+                            start_pos_x = self.start_x - ((((self.radius*2+5) *
+                            total_nr_of_columns)//2) + self.radius) + (self.radius*2+5)*col
+
 
                             # Drawing the checkers
                             pg.draw.circle(self.window, player_color[1],
                             [start_pos_x, start_pos_y], self.radius, 0)
-                            
+
                             # Adding the coordinates to the object
-                            self.players_positions[player_color[0]].append([start_pos_x, start_pos_y, player_color[0]])
+                            self.players_positions[player_color[0]].append([start_pos_x,
+                            start_pos_y, player_color[0]])
 
                         else:
                             # Getting the x coordinates
-                            start_pos_x = (self.start_x + ((((self.radius*2+5) * total_nr_of_columns)//2)
-                            + self.radius) - (self.radius*2+5)*col) - 65
-                            print(start_pos_x)
+                            start_pos_x = (self.start_x + ((((self.radius*2+5) *
+                            total_nr_of_columns)//2) + self.radius) - (self.radius*2+5)*col) - 65
+
                             # Drawing the checkers
                             pg.draw.circle(self.window, player_color[1],
                             [start_pos_x, start_pos_y], self.radius, 0)
-                            
+
                             # Adding the coordinates to the object
-                            self.players_positions[player_color[0]].append([start_pos_x, start_pos_y, player_color[0]])
-                    
+                            self.players_positions[player_color[0]].append([start_pos_x,
+                            start_pos_y, player_color[0]])
+
                     nr_of_columns += 1
                     hexagon_nr_of_columns -= 1
-                    # print(total_nr_of_columns)
-                    
+
         if nr_of_players >= 5:
-            pass
+            for index in range(4, 6):
+                player_color = players_colors[index]
+                # Initializing the original columns on the second row of the hexagon
+                nr_of_columns = 1
+                hexagon_nr_of_columns = 8
+
+                for row in range(1, 5):
+                    total_nr_of_columns = hexagon_nr_of_columns + (nr_of_columns*2)
+                    # Getting the y coordinates
+                    if index == 4:
+                        # Backwards
+                        start_pos_y = self.start_y - (self.radius*2+5)*row
+                    else:
+                        # Forwards
+                        start_pos_y = self.start_y + (self.radius*2+5)*row
+
+                    for col in range(nr_of_columns):
+
+                        if index == 4:
+
+                            # Getting the x coordinates
+                            start_pos_x = (self.start_x + ((((self.radius*2+5)
+                            * total_nr_of_columns)//2) + self.radius) - (self.radius*2+5)*col) - 65
+
+
+                            # Drawing the checkers
+                            pg.draw.circle(self.window, player_color[1],
+                            [start_pos_x, start_pos_y], self.radius, 0)
+
+                            # Adding the coordinates to the object
+                            self.players_positions[player_color[0]].append([start_pos_x,
+                            start_pos_y, player_color[0]])
+
+                        else:
+                            # Getting the x coordinates
+                            start_pos_x = self.start_x - ((((self.radius*2+5)
+                            * total_nr_of_columns)//2) + self.radius) + (self.radius*2+5)*col
+
+                            # Drawing the checkers
+                            pg.draw.circle(self.window, player_color[1],
+                            [start_pos_x, start_pos_y], self.radius, 0)
+
+                            # Adding the coordinates to the object
+                            self.players_positions[player_color[0]].append([start_pos_x,
+                            start_pos_y, player_color[0]])
+
+                    nr_of_columns += 1
+                    hexagon_nr_of_columns -= 1
 
 
 
@@ -181,7 +231,7 @@ class GameBoard:
 
         self.window.fill((252, 207, 121, 255))
         self.game_board_hexagon()
-        self.game_players(3)
+        self.game_players(5)
 
         # The game loop will be running until the status of the run variable become false
         while self.run:
