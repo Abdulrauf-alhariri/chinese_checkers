@@ -256,15 +256,15 @@ class GameBoard:
         """This function will update the game board after every move"""
 
         # Iterating through the coordinates dictionary, getting key and value
-        for coordinates in self.game_positions.values():
+        for list in self.game_positions.values():
 
             # Looping through the coordinates list
-            for coordinate in coordinates:
+            for coordinates in list:
 
                 # Gets the positions and the color of the chess piece
-                x_position = coordinate[0]
-                y_position = coordinate[1]
-                color = coordinate[2]
+                x_position = coordinates[0]
+                y_position = coordinates[1]
+                color = coordinates[2]
 
                 # Getting the color as rgb
                 color_rgb = self.colors[color]

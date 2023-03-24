@@ -25,9 +25,29 @@ class GameRules(GameBoard):
         the player wants to move according to the given positions
         """
 
-        print(pos)
+        # Getting the x and y coordinates from the givin position
+        pos_x = pos[0]
+        pos_y = pos[1]
+        cell = None
 
+        # Iterating through the dictonary of positions
+        for list in self.game_positions.values():
 
+            # Gripping the coordinates from each positions list
+            for coordinates in list:
+                
+                coord_x = coordinates[0]
+                coord_y = coordinates[1]
+            
+                # Checking if the range of the givin positions is in the range of any chess piece
+                # We will do that by checking if the positions are in the range of the piece diameter
+                x_range = (pos_x >= (coord_x - self.radius)) and (pos_x <= (coord_x + self.radius))
+                y_range = (pos_y >= (coord_y - self.radius)) and (pos_y <= (coord_y + self.radius))
+
+                if x_range and y_range:
+                    cell = coordinates
+
+        return cell
 
 
     def run_game(self):
