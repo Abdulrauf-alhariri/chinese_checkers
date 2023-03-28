@@ -12,16 +12,16 @@ pg.display.set_caption("Chinese checkers")
 class GameRules(GameBoard):
 
     """This class will determine the game rules"""
-    def __init__(self, width, length):
+    def __init__(self):
         # Passing arguments to the child class
-        super().__init__(width, length)
+        super().__init__()
 
         self.processing = False
         self.run = True
 
     def detect_cell(self, pos):
         """
-        The purpose of this function is to detect which cell 
+        The purpose of this function is to detect which cell
         the player wants to move according to the given positions
         """
 
@@ -30,15 +30,21 @@ class GameRules(GameBoard):
         pos_y = pos[1]
         cell = None
 
+        # if pos_x > 558 and pos_y > 260:
+        #     cell = [558, 260, 'hexagon']
+
         # Iterating through the dictonary of positions
         for list in self.game_positions.values():
 
             # Gripping the coordinates from each positions list
             for coordinates in list:
                 
+
                 coord_x = coordinates[0]
                 coord_y = coordinates[1]
-            
+                x_range = False
+                
+
                 # Checking if the range of the givin positions is in the range of any chess piece
                 # We will do that by checking if the positions are in the range of the piece diameter
                 x_range = (pos_x >= (coord_x - self.radius)) and (pos_x <= (coord_x + self.radius))
@@ -46,7 +52,9 @@ class GameRules(GameBoard):
 
                 if x_range and y_range:
                     cell = coordinates
+                    break
 
+  
         return cell
 
 
@@ -55,21 +63,24 @@ class GameRules(GameBoard):
 
         self.game_board_hexagon()
         self.sex_players()
+        self.update_game_board()
+        self.detect_cell([559, 261])
+
 
         # The game loop will be running until the status of the run variable become false
         while self.run:
 
-            # Getting the mouse position 
+            # Getting the mouse position
             mouse_pos = pg.mouse.get_pos()
             for event in pg.event.get():
 
                 if event.type == QUIT:
                     self.run = False
-                
+
                 # Checking if the game board has been clicked
                 if event.type == pg.MOUSEBUTTONDOWN:
 
-                    if not self.processing: 
+                    if not self.processing:
                         self.detect_cell(mouse_pos)
 
 
@@ -81,5 +92,5 @@ class GameRules(GameBoard):
         pg.quit()
 
 if __name__ == "__main__":
-    set_up = GameRules(1180, 800)
+    set_up = GameRules()
     set_up.run_game()

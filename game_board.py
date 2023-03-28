@@ -10,7 +10,7 @@ from pygame.locals import *
 class GameBoard:
 
     """This class will be respobsible for the game settings"""
-    def __init__(self, window_width, window_heigt):
+    def __init__(self, window_width=1180, window_heigt=800):
         self.radius = 15
         self.space_between_pieces = 5
         self.game_positions = {
@@ -76,15 +76,10 @@ class GameBoard:
                     coords.append([start_pos_x, start_pos_y_forward,hexagon_color])
 
 
-                    pg.draw.circle(self.window, hexagon_color_rgb,
-                    [start_pos_x, start_pos_y_backward], self.radius, 0)
-                    pg.draw.circle(self.window, hexagon_color_rgb,
-                    [start_pos_x, start_pos_y_forward], self.radius, 0)
 
                 else:
                     coords.append([start_pos_x, self.center_of_y_coordinates,hexagon_color])
-                    pg.draw.circle(self.window, hexagon_color_rgb,
-                    [start_pos_x, self.center_of_y_coordinates], self.radius, 0)
+
 
 
             # Decreasing the number if columns by each row
@@ -102,7 +97,7 @@ class GameBoard:
 
         for index in range(2):
             player_color = two_players_colors[index]
-            player_color_rgb = self.colors[player_color]
+
             nr_of_columns = 4
             for row in range(5, 9):
                 # Getting the y coordinates
@@ -121,9 +116,6 @@ class GameBoard:
                     ((((self.radius*2+self.space_between_pieces) * nr_of_columns)//2)
                     + self.radius)) + (self.radius*2+self.space_between_pieces)*col)
 
-                    # Drawing the checkers
-                    pg.draw.circle(self.window, player_color_rgb,
-                    [start_pos_x, start_pos_y], self.radius, 0)
 
                     # Adding the coordinates to the object
                     self.game_positions[player_color].append([start_pos_x,
@@ -140,7 +132,6 @@ class GameBoard:
         # Drawing the third and fourth player
         for index in range(2, 4):
             player_color = four_players_colors[index]
-            player_color_rgb = self.colors[player_color]
             # Initializing the original columns on the second row of the hexagon
             nr_of_columns = 1
             hexagon_nr_of_columns = 8
@@ -167,9 +158,6 @@ class GameBoard:
                         + self.radius) + (self.radius*2+self.space_between_pieces)*col)
 
 
-                        # Drawing the checkers
-                        pg.draw.circle(self.window, player_color_rgb,
-                        [start_pos_x, start_pos_y], self.radius, 0)
 
                         # Adding the coordinates to the object
                         self.game_positions[player_color].append([start_pos_x,
@@ -182,8 +170,7 @@ class GameBoard:
                         + self.radius) - (self.radius*2+self.space_between_pieces)*col) - 65)
 
 
-                        pg.draw.circle(self.window, player_color_rgb,
-                        [start_pos_x, start_pos_y], self.radius, 0)
+
 
 
                         self.game_positions[player_color].append([start_pos_x,
@@ -200,7 +187,7 @@ class GameBoard:
         # Drawing the fifth and sexth player
         for index in range(4, 6):
             player_color = sex_players_colors[index]
-            player_color_rgb = self.colors[player_color]
+
 
             nr_of_columns = 1
             hexagon_nr_of_columns = 8
@@ -227,9 +214,6 @@ class GameBoard:
                         + self.radius) - (self.radius*2+self.space_between_pieces)*col) -65)
 
 
-                        # Drawing the checkers
-                        pg.draw.circle(self.window, player_color_rgb,
-                        [start_pos_x, start_pos_y], self.radius, 0)
 
                         # Adding the coordinates to the object
                         self.game_positions[player_color].append([start_pos_x,
@@ -240,10 +224,6 @@ class GameBoard:
                         start_pos_x = (self.center_of_x_coordinates -
                         ((((self.radius*2+self.space_between_pieces) * total_nr_of_columns)//2)
                         + self.radius) + (self.radius*2+self.space_between_pieces)*col)
-
-                        # Drawing the checkers
-                        pg.draw.circle(self.window, player_color_rgb,
-                        [start_pos_x, start_pos_y], self.radius, 0)
 
 
                         self.game_positions[player_color].append([start_pos_x,
