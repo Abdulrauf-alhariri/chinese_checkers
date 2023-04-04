@@ -1,3 +1,4 @@
+"""Importing the necassary modules for the unit testing"""
 import unittest
 from game_rules import GameRules
 
@@ -10,13 +11,14 @@ test_game_rules.sex_players()
 # print(test_game_rules.game_positions)
 
 class TestGameRules(unittest.TestCase):
+    """This function will test the game rules class"""
 
     def test_detect_cell(self):
-        # Creating a list with possible results 
-        possible_cells = [[558, 260, 'hexagon'], [715, 435, 'orange'], 
+        """Here we test the detect_cell function"""
+        # Creating a list with possible results
+        possible_cells = [[558, 260, 'hexagon'], [715, 435, 'orange'],
         [435, 505,'black' ], [558, 610, 'red'], [435, 295, 'blue'], [767, 260, 'white']]
 
-        
 
         # Creating a dynamic loop of tests
         for cell in possible_cells:
@@ -40,8 +42,8 @@ class TestGameRules(unittest.TestCase):
                     # Here we are resetting the cell coordinates for the next loop
                     cell_x -= r
                     cell_y -= r
-                
-                # Changin the loop range to check to opposite side also 
+
+                # Changin the loop range to check to opposite side also
                 start_r = -15
                 end_r = 0
 
