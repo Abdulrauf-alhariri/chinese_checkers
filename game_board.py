@@ -72,13 +72,13 @@ class GameBoard:
                     - (self.radius*2+self.space_between_pieces)*row)
 
                     # Adding the column coordinates to the lists
-                    coords.append([start_pos_x, start_pos_y_backward,hexagon_color])
-                    coords.append([start_pos_x, start_pos_y_forward,hexagon_color])
+                    coords.append([start_pos_x, start_pos_y_backward,hexagon_color, False])
+                    coords.append([start_pos_x, start_pos_y_forward,hexagon_color, False])
 
 
 
                 else:
-                    coords.append([start_pos_x, self.center_of_y_coordinates,hexagon_color])
+                    coords.append([start_pos_x, self.center_of_y_coordinates, hexagon_color, False])
 
 
 
@@ -119,7 +119,7 @@ class GameBoard:
 
                     # Adding the coordinates to the object
                     self.game_positions[player_color].append([start_pos_x,
-                    start_pos_y, player_color])
+                    start_pos_y, player_color, False])
 
                 nr_of_columns -= 1
 
@@ -161,7 +161,7 @@ class GameBoard:
 
                         # Adding the coordinates to the object
                         self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color])
+                        start_pos_y, player_color, False])
 
                     else:
 
@@ -174,7 +174,7 @@ class GameBoard:
 
 
                         self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color])
+                        start_pos_y, player_color, False])
 
                 nr_of_columns += 1
                 hexagon_nr_of_columns -= 1
@@ -217,7 +217,7 @@ class GameBoard:
 
                         # Adding the coordinates to the object
                         self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color])
+                        start_pos_y, player_color, False])
 
                     else:
 
@@ -227,7 +227,7 @@ class GameBoard:
 
 
                         self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color])
+                        start_pos_y, player_color, False])
 
                 nr_of_columns += 1
                 hexagon_nr_of_columns -= 1
@@ -246,8 +246,16 @@ class GameBoard:
                 y_position = coordinates[1]
                 color = coordinates[2]
 
+                # Checking if cell is active
+                active = coordinates[3]
+
+
                 # Getting the color as rgb
-                color_rgb = self.colors[color]
+                if active:
+                    color_rgb = (45, 177, 252)
+
+                else:
+                    color_rgb = self.colors[color]
 
 
                 # Drawing the chess piece on its new position

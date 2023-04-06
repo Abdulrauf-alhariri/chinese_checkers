@@ -18,6 +18,8 @@ class GameRules(GameBoard):
 
         self.processing = False
         self.run = True
+        self.possible_cells = []
+        self.current_cell = None
 
     def detect_cell(self, pos):
         """
@@ -109,25 +111,16 @@ class GameRules(GameBoard):
         # Returning the cells
         return [[left_behind_cell, right_behind_cell], [left_cell, right_cell], [left_front_cell, right_front_cell]]
 
-
-
-    def detect_possible_moves(self, pos):
-        """This function will detect possible moves"""
-
-        # Getting the current cell
-        current_cell = self.detect_cell(pos)
+    def detect_right_wing_moves(self, current_cell):
+        """This function will detect the possible moves on the right side
+        both behind and in front of the current cell
+        """
+        # Getting the front right cell
         front_right_cell = self.detect_possible_cells(current_cell)[2][1]
-        front_left_cell = self.detect_possible_cells(current_cell)[2][0]
-
-        print(self.detect_possible_cells(current_cell))
         current_right_cell = front_right_cell
-        current_left_cell = front_left_cell
 
 
-        possible_moves = []
-
-
-        #This while loop will be responsible for finding the path
+         #This while loop will be responsible for finding the path
         #from the right side of the cell
         while True:
             try:
@@ -142,11 +135,11 @@ class GameRules(GameBoard):
                     # over the left and right cells after moving to the current position
                     if front_right_cell[2] != "hexagon":
 
-                        possible_moves.append(current_right_cell)
+                        self.possible_cells.append(current_right_cell)
                         break
 
                     if front_right_cell[2] == "hexagon":
-                        possible_moves.append(current_right_cell)
+                        self.possible_cells.append(current_right_cell)
 
                         break
 
@@ -172,8 +165,17 @@ class GameRules(GameBoard):
                 print(err)
                 break
 
+    def detect_left_wing_moves(self, current_cell):
+        """This function will detect the possible moves on the left side
+        both behind and in front of the current cell
+        """
+        # Getting the fron left cell
+        front_left_cell = self.detect_possible_cells(current_cell)[2][0]
+        current_left_cell = front_left_cell
 
+        
 
+        
         #This while loop will be responsible for finding the path
         #from the left side of the cell
 
@@ -190,11 +192,11 @@ class GameRules(GameBoard):
                     # over the left and left cells after moving to the current position
                     if front_left_cell[2] != "hexagon":
 
-                        possible_moves.append(current_left_cell)
+                        self.possible_cells.append(current_left_cell)
                         break
 
                     if front_left_cell[2] == "hexagon":
-                        possible_moves.append(current_left_cell)
+                        self.possible_cells.append(current_left_cell)
 
                         break
 
@@ -221,23 +223,92 @@ class GameRules(GameBoard):
                 break
 
 
-        print(possible_moves)
+    def detect_possible_moves(self, pos):
+        """This function will detect possible moves"""
+
+        # Getting the current cell
+        self.current_cell = self.detect_cell(pos)
+
+        # Check that the givin position belongs to a player and not hexagon
+        if self.current_cell[2] != "hexagon":
+
+            # detecting possible moves from the right 
+            self.detect_right_wing_moves(self.current_cell)
+
+            # Detecting possible moves from the left 
+            self.detect_left_wing_moves(self.current_cell)
+
+
+            # Looping through the possible cells to move to
+            for possible_cell in self.possible_cells:
+
+                # Getting the type of the cell in order to get all the cells with 
+                # Same type
+                cell_type = possible_cell[2]
+
+                # Getting the index of the possible cell in order to set it to active
+                cell_index = self.game_positions[cell_type].index(possible_cell)
+
+                # Setting the cell to possible move
+                self.game_positions[cell_type][cell_index][3] = True
+
+            if len(self.possible_cells) > 0:
+                self.processing = True
+
+
+    def move_cell(self, pos):
+        # Detecting the giving cell
+        move_to_cell = self.detect_cell(pos)
+
+        # Checking if the giving cell is among the possible cells
+        if move_to_cell in self.possible_cells:
+            
+            # Iterating through the coordinates dictionary, getting key and value
+            for list in self.game_positions.values():
+
+                # Looping through the coordinates list
+                for coordinates in list:
+
+                    if coordinates == move_to_cell:
+
+                        # Moving the current cell to the giving position
+                        coordinates[3] = False
+                        coordinates[2] = self.current_cell[2]
+
+                        self.possible_cells.remove(move_to_cell)
+
+                    if coordinates == self.current_cell:
+                        # Making the previous position of the current cell empty (hexagon)
+                        coordinates[2] = "hexagon"
+        
+            # Resetting the possible cells to unactive
+            # Looping through the possible cells to move to
+            for possible_cell in self.possible_cells:
+
+                # Getting the type of the cell in order to get all the cells with 
+                # Same type
+                cell_type = possible_cell[2]
+
+                # Getting the index of the possible cell in order to set it to active
+                cell_index = self.game_positions[cell_type].index(possible_cell)
+
+                # Setting the cell to possible move
+                self.game_positions[cell_type][cell_index][3] = False
+
+            # Resetting the posibble cells list to default
+            self.possible_cells = []
+            self.processing = False
+            
 
 
 
-
-
-
-
-
-
+        
 
     def run_game(self):
         self.window.fill((252, 207, 121, 255))
 
         self.game_board_hexagon()
         self.sex_players()
-        self.update_game_board()
         self.detect_cell([559, 261])
 
 
@@ -253,13 +324,19 @@ class GameRules(GameBoard):
 
                 # Checking if the game board has been clicked
                 if event.type == pg.MOUSEBUTTONDOWN:
-
+                    
+                    # Checking if the player do not have any possible cells to move to yet
                     if not self.processing:
                         self.detect_possible_moves(mouse_pos)
 
+                    else:
+                        self.move_cell(mouse_pos)
+                    
 
 
 
+
+            self.update_game_board()
             pg.display.update()
 
         # Closing the playing window
