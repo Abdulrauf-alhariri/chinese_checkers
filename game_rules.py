@@ -229,36 +229,42 @@ class GameRules(GameBoard):
         # Getting the current cell
         self.current_cell = self.detect_cell(pos)
 
-        # Check that the givin position belongs to a player and not hexagon
-        if self.current_cell[2] != "hexagon":
+        try:
 
-            # detecting possible moves from the right 
-            self.detect_right_wing_moves(self.current_cell)
+            # Check that the givin position belongs to a player and not hexagon
+            if self.current_cell[2] != "hexagon":
+                
 
-            # Detecting possible moves from the left 
-            self.detect_left_wing_moves(self.current_cell)
+                # detecting possible moves from the right 
+                self.detect_right_wing_moves(self.current_cell)
+
+                # Detecting possible moves from the left 
+                self.detect_left_wing_moves(self.current_cell)
 
 
-            # Looping through the possible cells to move to
-            for possible_cell in self.possible_cells:
+                # Looping through the possible cells to move to
+                for possible_cell in self.possible_cells:
 
-                # Getting the type of the cell in order to get all the cells with 
-                # Same type
-                cell_type = possible_cell[2]
+                    # Getting the type of the cell in order to get all the cells with 
+                    # Same type
+                    cell_type = possible_cell[2]
 
-                # Getting the index of the possible cell in order to set it to active
-                cell_index = self.game_positions[cell_type].index(possible_cell)
+                    # Getting the index of the possible cell in order to set it to active
+                    cell_index = self.game_positions[cell_type].index(possible_cell)
 
-                # Setting the cell to possible move
-                self.game_positions[cell_type][cell_index][3] = True
+                    # Setting the cell to possible move
+                    self.game_positions[cell_type][cell_index][3] = True
 
-            if len(self.possible_cells) > 0:
-                self.processing = True
+                if len(self.possible_cells) > 0:
+                    self.processing = True
 
+        except TypeError as err:
+            pass
 
     def move_cell(self, pos):
         # Detecting the giving cell
         move_to_cell = self.detect_cell(pos)
+        print(move_to_cell)
 
         # Checking if the giving cell is among the possible cells
         if move_to_cell in self.possible_cells:
@@ -268,18 +274,21 @@ class GameRules(GameBoard):
 
                 # Looping through the coordinates list
                 for coordinates in list:
+                    print(move_to_cell)
+
 
                     if coordinates == move_to_cell:
+                        print("change")
 
-                        # Moving the current cell to the giving position
+                        # Changing the positions between the current cell and the got cell
                         coordinates[3] = False
                         coordinates[2] = self.current_cell[2]
 
+                        self.current_cell[2] = "hexagon"
+                        
+
                         self.possible_cells.remove(move_to_cell)
 
-                    if coordinates == self.current_cell:
-                        # Making the previous position of the current cell empty (hexagon)
-                        coordinates[2] = "hexagon"
         
             # Resetting the possible cells to unactive
             # Looping through the possible cells to move to
@@ -298,6 +307,8 @@ class GameRules(GameBoard):
             # Resetting the posibble cells list to default
             self.possible_cells = []
             self.processing = False
+        
+        
             
 
 
