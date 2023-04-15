@@ -116,54 +116,94 @@ class GameRules(GameBoard):
         both behind and in front of the current cell
         """
         # Getting the front right cell
+        back_right_cell = self.detect_possible_cells(current_cell)[0][1]
+        right_cell = self.detect_possible_cells(current_cell)[1][1]
         front_right_cell = self.detect_possible_cells(current_cell)[2][1]
-        current_right_cell = front_right_cell
 
+        current_front_right_cell = front_right_cell
+        current_back_right_cell = back_right_cell
+
+        front_detecter = False
+        back_detecter = False
+        detecter = False
 
          #This while loop will be responsible for finding the path
         #from the right side of the cell
-        while True:
+        while not front_detecter :
             try:
 
                 # Checking if the player can only move on step
-                if current_right_cell[2] == "hexagon":
-                    possible_cells = self.detect_possible_cells(current_right_cell)
+                if current_front_right_cell[2] == "hexagon":
+                    possible_cells = self.detect_possible_cells(current_front_right_cell)
 
                     front_right_cell = possible_cells[2][1]
 
                     # Here we check if this is a closed end where the player can not jump
                     # over the left and right cells after moving to the current position
+                    if front_right_cell[2] == "hexagon":
+                        self.possible_cells.append(current_front_right_cell)
+
+                        front_detecter = True
+                        
                     if front_right_cell[2] != "hexagon":
 
-                        self.possible_cells.append(current_right_cell)
-                        break
+                        self.possible_cells.append(current_front_right_cell)
+                        front_detecter = True
 
-                    if front_right_cell[2] == "hexagon":
-                        self.possible_cells.append(current_right_cell)
-
-                        break
 
                 # Checking if the right infron cell is not empty
-                elif current_right_cell[2] != "hexagon":
+                elif current_front_right_cell[2] != "hexagon":
                     # If it is not empty we check if we can jump over it
-                    possible_cells = self.detect_possible_cells(current_right_cell)
+                    possible_cells = self.detect_possible_cells(current_front_right_cell)
 
                     front_right_cell = possible_cells[2][1]
-                    # print(next_two_cells[1][2] == "hexagon")
-                    # break
+                   
 
                     if front_right_cell[2] == "hexagon":
-                        current_right_cell = front_right_cell
+                        current_front_right_cell = front_right_cell
 
                     # Here we check if it is a closed end
                     elif front_right_cell[2] != "hexagon":
-                        break
+                        front_detecter = True
 
+                
             #Here we accept TypeError in case right_cell or left_cell are equal to None
             except TypeError as err:
 
                 print(err)
                 break
+
+        while not back_detecter:
+            if current_back_right_cell[2] == "hexagon":
+                possible_cells = self.detect_possible_cells(current_front_right_cell)
+
+                back_right_cell = possible_cells[0][1]
+
+                # Here we check if this is a closed end where the player can not jump
+                # over the left and right cells after moving to the current position
+                if back_right_cell[2] != "hexagon":
+
+                    self.possible_cells.append(current_back_right_cell)
+                    back_detecter = True
+
+                if back_right_cell[2] == "hexagon":
+                    self.possible_cells.append(current_back_right_cell)
+
+                    back_detecter = True
+
+            elif current_back_right_cell[2] != "hexagon":
+                possible_cells = self.detect_possible_cells(current_front_right_cell)
+                back_right_cell = possible_cells[0][1]
+
+                if back_right_cell[2] != "hexagon":
+                    back_detecter = True
+                
+                elif back_right_cell[2] == "hexagon":
+                    current_back_right_cell = back_right_cell
+
+
+
+        
 
     def detect_left_wing_moves(self, current_cell):
         """This function will detect the possible moves on the left side
@@ -262,9 +302,10 @@ class GameRules(GameBoard):
             pass
 
     def move_cell(self, pos):
+        """This function will move the current cell to the required position"""
+
         # Detecting the giving cell
         move_to_cell = self.detect_cell(pos)
-        print(move_to_cell)
 
         # Checking if the giving cell is among the possible cells
         if move_to_cell in self.possible_cells:
@@ -274,11 +315,9 @@ class GameRules(GameBoard):
 
                 # Looping through the coordinates list
                 for coordinates in list:
-                    print(move_to_cell)
-
 
                     if coordinates == move_to_cell:
-                        print("change")
+                        
 
                         # Changing the positions between the current cell and the got cell
                         coordinates[3] = False
