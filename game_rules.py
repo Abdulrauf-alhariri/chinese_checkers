@@ -1,7 +1,8 @@
 """importing the pygame module"""
 import pygame as pg
 from pygame.locals import *
-from game_board import GameBoard
+from game_moves import GameMoves
+import traceback
 
 #Initializing the pygame module
 pg.init()
@@ -9,7 +10,7 @@ pg.init()
 #Setting the window caption
 pg.display.set_caption("Chinese checkers")
 
-class GameRules(GameBoard):
+class GameRules(GameMoves):
 
     """This class will determine the game rules"""
     def __init__(self):
@@ -18,8 +19,6 @@ class GameRules(GameBoard):
 
         self.processing = False
         self.run = True
-        self.possible_cells = []
-        self.current_cell = None
 
     def detect_cell(self, pos):
         """
@@ -105,251 +104,12 @@ class GameRules(GameBoard):
                     left_behind_cell = self.detect_cell([x_pos, y_pos_behind])
                     left_cell = self.detect_cell([x_pos, y_pos_current])
 
-            except Exception as e:
-                print(e)
+            except TypeError:
+                print(traceback.format_exc())
 
         # Returning the cells
         return [[left_behind_cell, right_behind_cell],
         [left_cell, right_cell], [left_front_cell, right_front_cell]]
-
-    def back_right_cells(self, current_cell):
-        """This function will detect the back possible right cells to move to"""
-
-        back_right_cell = self.detect_possible_cells(current_cell)[0][1]
-        current_back_right_cell = back_right_cell
-
-
-        while current_back_right_cell:
-            try:
-                if current_back_right_cell[2] == "hexagon":
-                    possible_cells = self.detect_possible_cells(current_back_right_cell)
-
-                    back_right_cell = possible_cells[0][1]
-
-                    # Here we check if this is a closed end where the player can not jump
-                    # over the left and right cells after moving to the current position
-                    # We also check that the type is not None
-
-                    if back_right_cell:
-                        if back_right_cell[2] != "hexagon":
-
-                            self.possible_cells.append(current_back_right_cell)
-                            break
-
-                        if back_right_cell[2] == "hexagon":
-                            self.possible_cells.append(current_back_right_cell)
-
-                            break
-                    else:
-                        # If the type is none then that means that you just can make one move
-                        self.possible_cells.append(current_back_right_cell)
-                        break
-
-                if current_back_right_cell[2] != "hexagon":
-                    possible_cells = self.detect_possible_cells(current_back_right_cell)
-
-                    back_right_cell = possible_cells[0][1]
-
-                    # Checking that we do not get None as type
-                    if back_right_cell:
-
-                        if back_right_cell[2] == "hexagon":
-                            current_back_right_cell = back_right_cell
-
-                        elif back_right_cell[2] != "hexagon":
-                            break
-
-
-                    else:
-                        break
-
-            except Exception as err:
-                print("hi")
-                print(err)
-                break
-
-    def back_left_cells(self, current_cell):
-        """This function will detect the possible moves on the back left side of the current cell"""
-        back_left_cell = self.detect_possible_cells(current_cell)[0][0]
-        current_back_left_cell = back_left_cell
-
-
-        while current_back_left_cell:
-            try:
-                if current_back_left_cell[2] == "hexagon":
-                    possible_cells = self.detect_possible_cells(current_back_left_cell)
-
-                    back_left_cell = possible_cells[0][0]
-
-                    # Here we check if this is a closed end where the player can not jump
-                    # over the left and right cells after moving to the current position
-                    # We also check that the type is not None
-
-                    if back_left_cell:
-                        if back_left_cell[2] != "hexagon":
-
-                            self.possible_cells.append(current_back_left_cell)
-                            break
-
-                        if back_left_cell[2] == "hexagon":
-                            self.possible_cells.append(current_back_left_cell)
-
-                            break
-                    else:
-                        # If the type is none then that means that you just can make one move
-                        self.possible_cells.append(current_back_left_cell)
-                        break
-
-                if current_back_left_cell[2] != "hexagon":
-                    possible_cells = self.detect_possible_cells(current_back_left_cell)
-
-                    back_left_cell = possible_cells[0][0]
-
-                    # Checking that we do not get None as type
-                    if back_left_cell:
-
-                        if back_left_cell[2] == "hexagon":
-                            current_back_left_cell = back_left_cell
-
-                        elif back_left_cell[2] != "hexagon":
-                            break
-
-
-                    else:
-                        break
-
-            except Exception as err:
-                print(err)
-                break
-
-
-    def detect_right_wing_moves(self, current_cell):
-        """This function will detect the possible moves on the right side
-        both behind and in front of the current cell
-        """
-        # Getting the front right cell
-        right_cell = self.detect_possible_cells(current_cell)[1][1]
-        front_right_cell = self.detect_possible_cells(current_cell)[2][1]
-
-        current_front_right_cell = front_right_cell
-
-
-        #This while loop will be responsible for finding the path
-        #from the right side of the cell
-        while current_front_right_cell:
-            try:
-
-
-                # Checking if the player can only move on step
-                if current_front_right_cell[2] == "hexagon":
-                    possible_cells = self.detect_possible_cells(current_front_right_cell)
-
-                    front_right_cell = possible_cells[2][1]
-
-                    # Here we check if this is a closed end where the player can not jump
-                    # over the left and right cells after moving to the current position
-                    # Checking so that the type is not None
-
-                    if front_right_cell:
-                        if front_right_cell[2] == "hexagon":
-                            self.possible_cells.append(current_front_right_cell)
-
-                            break
-
-                        if front_right_cell[2] != "hexagon":
-
-                            self.possible_cells.append(current_front_right_cell)
-                            break
-                    else:
-                        break
-
-                # Checking if the right infron cell is not empty
-                elif current_front_right_cell[2] != "hexagon":
-                    # If it is not empty we check if we can jump over it
-                    possible_cells = self.detect_possible_cells(current_front_right_cell)
-
-                    front_right_cell = possible_cells[2][1]
-
-                   # Making sure that the type is not None
-                    if front_right_cell:
-                        if front_right_cell[2] == "hexagon":
-                            current_front_right_cell = front_right_cell
-
-                        # Here we check if it is a closed end
-                        elif front_right_cell[2] != "hexagon":
-                            break
-
-                    else:
-                        break
-
-
-            #Here we accept TypeError in case right_cell or left_cell are equal to None
-            except Exception as err:
-
-                print(err)
-                break
-
-        self.back_right_cells(current_cell)
-
-
-    def detect_left_wing_moves(self, current_cell):
-        """This function will detect the possible moves on the left side
-        both behind and in front of the current cell
-        """
-        # Getting the fron left cell
-        front_left_cell = self.detect_possible_cells(current_cell)[2][0]
-        current_front_left_cell = front_left_cell
-
-
-
-
-        #This while loop will be responsible for finding the path
-        #from the left side of the cell
-
-        while True:
-            try:
-
-                # Checking if the player can only move on step
-                if current_front_left_cell[2] == "hexagon":
-                    possible_cells = self.detect_possible_cells(current_front_left_cell)
-
-                    front_left_cell = possible_cells[2][0]
-
-                    # Here we check if this is a closed end where the player can not jump
-                    # over the left and left cells after moving to the current position
-                    if front_left_cell[2] != "hexagon":
-
-                        self.possible_cells.append(current_front_left_cell)
-                        break
-
-                    if front_left_cell[2] == "hexagon":
-                        self.possible_cells.append(current_front_left_cell)
-
-                        break
-
-                # Checking if the left infron cell is not empty
-                elif current_front_left_cell[2] != "hexagon":
-                    # If it is not empty we check if we can jump over it
-                    possible_cells = self.detect_possible_cells(current_front_left_cell)
-
-                    front_left_cell = possible_cells[2][0]
-                    # print(next_two_cells[1][2] == "hexagon")
-                    # break
-
-                    if front_left_cell[2] == "hexagon":
-                        current_front_left_cell = front_left_cell
-
-                    # Here we check if it is a closed end
-                    elif front_left_cell[2] != "hexagon":
-                        break
-
-            #Here we accept TypeError in case left_cell or left_cell are equal to None
-            except TypeError as err:
-
-                print(err)
-                break
-
-        self.back_left_cells(current_cell)
 
     def detect_possible_moves(self, pos):
         """This function will detect possible moves"""
@@ -369,7 +129,7 @@ class GameRules(GameBoard):
 
                 # Detecting possible moves from the left
                 self.detect_left_wing_moves(self.current_cell)
-                
+
 
                 # Looping through the possible cells to move to
                 for possible_cell in self.possible_cells:
@@ -381,7 +141,7 @@ class GameRules(GameBoard):
 
                     # Getting the index of the possible cell in order to set it to active
                     cell_index = self.game_positions[cell_list_type].index(possible_cell)
-                    
+
 
                     # Setting the cell to possible move
                     self.game_positions[cell_list_type][cell_index][3] = True
@@ -389,8 +149,8 @@ class GameRules(GameBoard):
                 if len(self.possible_cells) > 0:
                     self.processing = True
 
-        except Exception as err:
-            print("Here", err)
+        except:
+            print(traceback.format_exc())
 
     def move_cell(self, pos):
         """This function will move the current cell to the required position"""
