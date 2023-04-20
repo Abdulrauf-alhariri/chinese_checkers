@@ -365,33 +365,32 @@ class GameRules(GameBoard):
 
 
                 # detecting possible moves from the right
-                # self.detect_right_wing_moves(self.current_cell)
+                self.detect_right_wing_moves(self.current_cell)
 
                 # Detecting possible moves from the left
                 self.detect_left_wing_moves(self.current_cell)
                 
 
-                print("cells", self.possible_cells)
-
-
                 # Looping through the possible cells to move to
                 for possible_cell in self.possible_cells:
+                    print(possible_cell)
 
                     # Getting the type of the cell in order to get all the cells with
                     # Same type
-                    cell_type = possible_cell[2]
+                    cell_list_type = possible_cell[4]
 
                     # Getting the index of the possible cell in order to set it to active
-                    cell_index = self.game_positions[cell_type].index(possible_cell)
+                    cell_index = self.game_positions[cell_list_type].index(possible_cell)
+                    
 
                     # Setting the cell to possible move
-                    self.game_positions[cell_type][cell_index][3] = True
+                    self.game_positions[cell_list_type][cell_index][3] = True
 
                 if len(self.possible_cells) > 0:
                     self.processing = True
 
         except Exception as err:
-            print(err)
+            print("Here", err)
 
     def move_cell(self, pos):
         """This function will move the current cell to the required position"""
@@ -427,13 +426,13 @@ class GameRules(GameBoard):
 
                 # Getting the type of the cell in order to get all the cells with
                 # Same type
-                cell_type = possible_cell[2]
+                cell_list_type = possible_cell[4]
 
                 # Getting the index of the possible cell in order to set it to active
-                cell_index = self.game_positions[cell_type].index(possible_cell)
+                cell_index = self.game_positions[cell_list_type].index(possible_cell)
 
                 # Setting the cell to possible move
-                self.game_positions[cell_type][cell_index][3] = False
+                self.game_positions[cell_list_type][cell_index][3] = False
 
             # Resetting the posibble cells list to default
             self.possible_cells = []

@@ -43,9 +43,12 @@ class GameBoard:
         """"This function will draw the base of the game board without the players """
         # Specifying the max number of columns that can be in a row
         nr_of_columns = 9
-        hexagon_color_rgb = self.colors['hexagon']
-        hexagon_color = "hexagon"
+        player_type = "hexagon"
         coords = []
+
+        # This variable will tell in which list of the different
+        # types our cell is currently in
+        list_type = player_type
 
         # The hexagon consists of nine rows where it follows the pattern 5-9-5 for the columnes
         #It means the first row starts with 5 columns
@@ -72,13 +75,16 @@ class GameBoard:
                     - (self.radius*2+self.space_between_pieces)*row)
 
                     # Adding the column coordinates to the lists
-                    coords.append([start_pos_x, start_pos_y_backward,hexagon_color, False])
-                    coords.append([start_pos_x, start_pos_y_forward,hexagon_color, False])
+                    coords.append([start_pos_x, start_pos_y_backward,
+                                   player_type, False, list_type])
+                    coords.append([start_pos_x, start_pos_y_forward,
+                                    player_type, False, list_type])
 
 
 
                 else:
-                    coords.append([start_pos_x, self.center_of_y_coordinates, hexagon_color, False])
+                    coords.append([start_pos_x, self.center_of_y_coordinates,
+                                   player_type, False, list_type])
 
 
 
@@ -88,7 +94,7 @@ class GameBoard:
         # Checking if the lists are not empty before adding them to the global coordinate list
         if len(coords) > 0:
             for coord in coords:
-                self.game_positions["hexagon"].append(coord)
+                self.game_positions[player_type].append(coord)
 
     def two_players(self):
         """This function will draw two players"""
@@ -96,7 +102,9 @@ class GameBoard:
 
 
         for index in range(2):
-            player_color = two_players_colors[index]
+            # Here is the type of the player and in wich list he is in
+            player_type = two_players_colors[index]
+            list_type = player_type
 
             nr_of_columns = 4
             for row in range(5, 9):
@@ -118,8 +126,8 @@ class GameBoard:
 
 
                     # Adding the coordinates to the object
-                    self.game_positions[player_color].append([start_pos_x,
-                    start_pos_y, player_color, False])
+                    self.game_positions[player_type].append([start_pos_x,
+                    start_pos_y,player_type, False, list_type])
 
                 nr_of_columns -= 1
 
@@ -131,7 +139,9 @@ class GameBoard:
         four_players_colors = ["red", "green", "blue", "orange"]
         # Drawing the third and fourth player
         for index in range(2, 4):
-            player_color = four_players_colors[index]
+            player_type = four_players_colors[index]
+            list_type = player_type
+
             # Initializing the original columns on the second row of the hexagon
             nr_of_columns = 1
             hexagon_nr_of_columns = 8
@@ -160,8 +170,8 @@ class GameBoard:
 
 
                         # Adding the coordinates to the object
-                        self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color, False])
+                        self.game_positions[player_type].append([start_pos_x,
+                        start_pos_y,player_type, False, list_type])
 
                     else:
 
@@ -173,8 +183,8 @@ class GameBoard:
 
 
 
-                        self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color, False])
+                        self.game_positions[player_type].append([start_pos_x,
+                        start_pos_y,player_type, False, list_type])
 
                 nr_of_columns += 1
                 hexagon_nr_of_columns -= 1
@@ -186,7 +196,8 @@ class GameBoard:
         sex_players_colors = ["red", "green", "blue", "orange", "white", "black"]
         # Drawing the fifth and sexth player
         for index in range(4, 6):
-            player_color = sex_players_colors[index]
+            player_type = sex_players_colors[index]
+            list_type = player_type
 
 
             nr_of_columns = 1
@@ -216,8 +227,8 @@ class GameBoard:
 
 
                         # Adding the coordinates to the object
-                        self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color, False])
+                        self.game_positions[player_type].append([start_pos_x,
+                        start_pos_y, player_type, False, list_type])
 
                     else:
 
@@ -226,8 +237,8 @@ class GameBoard:
                         + self.radius) + (self.radius*2+self.space_between_pieces)*col)
 
 
-                        self.game_positions[player_color].append([start_pos_x,
-                        start_pos_y, player_color, False])
+                        self.game_positions[player_type].append([start_pos_x,
+                        start_pos_y, player_type, False, list_type])
 
                 nr_of_columns += 1
                 hexagon_nr_of_columns -= 1
