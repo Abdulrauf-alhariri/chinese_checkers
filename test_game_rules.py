@@ -16,8 +16,8 @@ class TestGameRules(unittest.TestCase):
     def test_detect_cell(self):
         """Here we test the detect_cell function"""
         # Creating a list with possible results
-        possible_cells = [[558, 260, 'hexagon'], [715, 435, 'orange'],
-        [435, 505,'black' ], [558, 610, 'red'], [435, 295, 'blue'], [767, 260, 'white']]
+        possible_cells = [[558, 260, 'hexagon', False, "hexagon"], [715, 435, 'orange', False, "orange"],
+        [435, 505,'black', False, "black" ], [558, 610, 'red', False, "red"], [435, 295, 'blue', False, "blue"], [767, 260, 'white', False, "white"]]
 
 
         # Creating a dynamic loop of tests

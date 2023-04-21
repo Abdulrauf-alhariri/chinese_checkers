@@ -1,8 +1,8 @@
 """importing the pygame module"""
+import traceback
 import pygame as pg
 from pygame.locals import *
 from game_moves import GameMoves
-import traceback
 
 #Initializing the pygame module
 pg.init()
@@ -31,14 +31,12 @@ class GameRules(GameMoves):
         pos_y = pos[1]
         cell = None
 
-        # if pos_x > 558 and pos_y > 260:
-        #     cell = [558, 260, 'hexagon']
 
         # Iterating through the dictonary of positions
-        for list in self.game_positions.values():
+        for coord_list in self.game_positions.values():
 
             # Gripping the coordinates from each positions list
-            for coordinates in list:
+            for coordinates in coord_list:
 
 
                 coord_x = coordinates[0]
@@ -48,8 +46,18 @@ class GameRules(GameMoves):
 
                 # Checking if the range of the givin positions is in the range of any chess piece
                 #We will do that by checking if the positions are in the range of the piece diameter
-                x_range = (pos_x >= (coord_x - self.radius)) and (pos_x <= (coord_x + self.radius))
-                y_range = (pos_y >= (coord_y - self.radius)) and (pos_y <= (coord_y + self.radius))
+                # x_range = (coord_x + self.radius) >= pos >= (coord_x - self.radius)
+
+                # First variable checks if the position is greater then the beginning of the circle
+                # Second variable checks if it is smaller than the end of the circle
+                x_start = pos_x >= (coord_x - self.radius)
+                x_end = pos_x <= (coord_x + self.radius)
+
+                y_start = pos_y >= (coord_y - self.radius)
+                y_end = pos_y <= (coord_y + self.radius)
+
+                x_range = x_start and x_end
+                y_range = y_start and y_end
 
                 if x_range and y_range:
                     cell = coordinates
@@ -118,39 +126,38 @@ class GameRules(GameMoves):
         self.current_cell = self.detect_cell(pos)
 
 
-        try:
-
-            # Check that the givin position belongs to a player and not hexagon
-            if self.current_cell[2] != "hexagon":
 
 
-                # detecting possible moves from the right
-                self.detect_right_wing_moves(self.current_cell)
-
-                # Detecting possible moves from the left
-                self.detect_left_wing_moves(self.current_cell)
+        # Check that the givin position belongs to a player and not hexagon
+        if self.current_cell[2] != "hexagon":
 
 
-                # Looping through the possible cells to move to
-                for possible_cell in self.possible_cells:
-                    print(possible_cell)
+            # detecting possible moves from the right
+            self.detect_right_wing_moves(self.current_cell)
 
-                    # Getting the type of the cell in order to get all the cells with
-                    # Same type
-                    cell_list_type = possible_cell[4]
-
-                    # Getting the index of the possible cell in order to set it to active
-                    cell_index = self.game_positions[cell_list_type].index(possible_cell)
+            # Detecting possible moves from the left
+            self.detect_left_wing_moves(self.current_cell)
 
 
-                    # Setting the cell to possible move
-                    self.game_positions[cell_list_type][cell_index][3] = True
+            # Looping through the possible cells to move to
+            for possible_cell in self.possible_cells:
+                print(possible_cell)
 
-                if len(self.possible_cells) > 0:
-                    self.processing = True
+                # Getting the type of the cell in order to get all the cells with
+                # Same type
+                cell_list_type = possible_cell[4]
 
-        except:
-            print(traceback.format_exc())
+                # Getting the index of the possible cell in order to set it to active
+                cell_index = self.game_positions[cell_list_type].index(possible_cell)
+
+
+                # Setting the cell to possible move
+                self.game_positions[cell_list_type][cell_index][3] = True
+
+            if len(self.possible_cells) > 0:
+                self.processing = True
+
+
 
     def move_cell(self, pos):
         """This function will move the current cell to the required position"""
@@ -162,10 +169,10 @@ class GameRules(GameMoves):
         if move_to_cell in self.possible_cells:
 
             # Iterating through the coordinates dictionary, getting key and value
-            for list in self.game_positions.values():
+            for coord_list in self.game_positions.values():
 
                 # Looping through the coordinates list
-                for coordinates in list:
+                for coordinates in coord_list:
 
                     if coordinates == move_to_cell:
 
