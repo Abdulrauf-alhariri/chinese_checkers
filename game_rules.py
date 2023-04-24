@@ -19,6 +19,7 @@ class GameRules(GameMoves):
 
         self.processing = False
         self.run = True
+        self.game_over = False
 
     def detect_cell(self, pos):
         """
@@ -118,47 +119,40 @@ class GameRules(GameMoves):
         # Returning the cells
         return [[left_behind_cell, right_behind_cell],
         [left_cell, right_cell], [left_front_cell, right_front_cell]]
-    
 
     def detect_possible_moves(self, pos):
         """This function will detect possible moves"""
 
         # Getting the current cell
         self.current_cell = self.detect_cell(pos)
-        print("current cell: ", self.current_cell)
-        print("possible cells: ", self.detect_possible_cells(self.current_cell))
-
-
-
 
         # Check that the givin position belongs to a player and not hexagon
-        if self.current_cell[2] != "hexagon":
+        if self.current_cell:
+            if self.current_cell[2] != "hexagon":
 
 
-            # detecting possible moves from the right
-            self.detect_right_wing_moves(self.current_cell)
+                # # detecting possible moves from the right
+                self.detect_right_wing_moves(self.current_cell, self.detect_possible_cells)
 
-            # Detecting possible moves from the left
-            self.detect_left_wing_moves(self.current_cell)
+                # # Detecting possible moves from the left
+                self.detect_left_wing_moves(self.current_cell, self.detect_possible_cells)
+
+                # Looping through the possible cells to move to
+                for possible_cell in self.possible_cells:
+
+                    # Getting the type of the cell in order to get all the cells with
+                    # Same type
+                    cell_list_type = possible_cell[4]
+
+                    # Getting the index of the possible cell in order to set it to active
+                    cell_index = self.game_positions[cell_list_type].index(possible_cell)
 
 
-            # Looping through the possible cells to move to
-            for possible_cell in self.possible_cells:
+                    # Setting the cell to possible move
+                    self.game_positions[cell_list_type][cell_index][3] = True
 
-                # Getting the type of the cell in order to get all the cells with
-                # Same type
-                cell_list_type = possible_cell[4]
-
-                # Getting the index of the possible cell in order to set it to active
-                cell_index = self.game_positions[cell_list_type].index(possible_cell)
-
-
-                # Setting the cell to possible move
-                self.game_positions[cell_list_type][cell_index][3] = True
-
-            if len(self.possible_cells) > 0:
-                self.processing = True
-
+                if len(self.possible_cells) > 0:
+                    self.processing = True
 
     def move_cell(self, pos):
         """This function will move the current cell to the required position"""
@@ -206,6 +200,41 @@ class GameRules(GameMoves):
             self.possible_cells = []
             self.processing = False
 
+    def game_status(self, current_players):
+        """This function will be responsible on tracking the game status
+        each time any player make a move this function will check if any 
+        player have won yet
+        """
+
+        # Getting the current player that are in the game
+        
+
+        # Looping through the players list and getting each player alone
+        for player in current_players:
+            
+            # Getting the player territory
+            territory = self.game_positions[player]
+            game_over = True
+
+            # Checking if the territory has been taken by any other player
+            for chess in territory:
+                player_type = chess[2]
+                territory_type = chess[4]
+
+                # Chcking if the territory is not fully taken yet
+                if player_type == territory_type:
+                    game_over = False
+
+            # Checking if it is game over
+            if game_over:
+                self.game_over = True
+
+                # Because all the positions have been colonized by the winner
+                # So any random cell of them will give us the type of the winner
+                winner = self.game_positions[player][0][2]
+
+                # Returning the winer
+                return winner
 
     def run_game(self):
         self.window.fill((252, 207, 121, 255))

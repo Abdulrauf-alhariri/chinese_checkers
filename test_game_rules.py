@@ -11,7 +11,7 @@ test_game_rules.sex_players()
 # print(test_game_rules.game_positions)
 
 class TestGameRules(unittest.TestCase):
-    """This function will test the game rules class"""
+    """This class will test the game rules class"""
 
     def test_detect_cell(self):
         """Here we test the detect_cell function"""
@@ -81,6 +81,25 @@ class TestGameRules(unittest.TestCase):
             # Moving to the next current cell
             nr_current += 1
 
+    def test_game_status(self):
+        """This function will test game status in game rules class"""
+
+        # First thing is to change the chess positions of a player
+        # To make him win and take over someones territory
+        # We choose the green player to make him win and take over red player territory
+
+        players = ["green", "red", "black", "white", "blue", "orange"]
+
+        for chess in test_game_rules.game_positions["red"]:
+            # Changing the player in the territory
+            chess[2] = "green"
+
+        # Here we try the game status function
+        # The function will return the winner and it will change
+        # Game over to true
+        resutl = test_game_rules.game_status(players)
+        self.assertEqual(resutl, "green")
+        self.assertEqual(test_game_rules.game_over, True)
 
 
 
