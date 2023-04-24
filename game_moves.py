@@ -245,7 +245,6 @@ class GameMoves(GameBoard):
         both behind and in front of the current cell
         """
         # Getting the front right cell
-        right_cell = self.detect_possible_cells(current_cell)[1][1]
         front_right_cell = self.detect_possible_cells(current_cell)[2][1]
 
         current_front_right_cell = front_right_cell
@@ -278,6 +277,7 @@ class GameMoves(GameBoard):
                             self.possible_cells.append(current_front_right_cell)
                             break
                     else:
+                        self.possible_cells.append(current_front_right_cell)
                         break
 
                 # Checking if the right infron cell is not empty
@@ -334,14 +334,18 @@ class GameMoves(GameBoard):
 
                     # Here we check if this is a closed end where the player can not jump
                     # over the left and left cells after moving to the current position
-                    if front_left_cell[2] != "hexagon":
+                    if front_left_cell:
+                        if front_left_cell[2] != "hexagon":
 
+                            self.possible_cells.append(current_front_left_cell)
+                            break
+
+                        if front_left_cell[2] == "hexagon":
+                            self.possible_cells.append(current_front_left_cell)
+
+                            break
+                    else:
                         self.possible_cells.append(current_front_left_cell)
-                        break
-
-                    if front_left_cell[2] == "hexagon":
-                        self.possible_cells.append(current_front_left_cell)
-
                         break
 
                 # Checking if the left infron cell is not empty
@@ -352,12 +356,14 @@ class GameMoves(GameBoard):
                     front_left_cell = possible_cells[2][0]
                     # print(next_two_cells[1][2] == "hexagon")
                     # break
+                    if front_left_cell:
+                        if front_left_cell[2] == "hexagon":
+                            current_front_left_cell = front_left_cell
 
-                    if front_left_cell[2] == "hexagon":
-                        current_front_left_cell = front_left_cell
-
-                    # Here we check if it is a closed end
-                    elif front_left_cell[2] != "hexagon":
+                        # Here we check if it is a closed end
+                        elif front_left_cell[2] != "hexagon":
+                            break
+                    else:
                         break
 
             #Here we accept TypeError in case left_cell or left_cell are equal to None

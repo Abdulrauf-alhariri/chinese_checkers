@@ -118,12 +118,15 @@ class GameRules(GameMoves):
         # Returning the cells
         return [[left_behind_cell, right_behind_cell],
         [left_cell, right_cell], [left_front_cell, right_front_cell]]
+    
 
     def detect_possible_moves(self, pos):
         """This function will detect possible moves"""
 
         # Getting the current cell
         self.current_cell = self.detect_cell(pos)
+        print("current cell: ", self.current_cell)
+        print("possible cells: ", self.detect_possible_cells(self.current_cell))
 
 
 
@@ -141,7 +144,6 @@ class GameRules(GameMoves):
 
             # Looping through the possible cells to move to
             for possible_cell in self.possible_cells:
-                print(possible_cell)
 
                 # Getting the type of the cell in order to get all the cells with
                 # Same type
@@ -156,7 +158,6 @@ class GameRules(GameMoves):
 
             if len(self.possible_cells) > 0:
                 self.processing = True
-
 
 
     def move_cell(self, pos):

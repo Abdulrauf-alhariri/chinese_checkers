@@ -47,6 +47,45 @@ class TestGameRules(unittest.TestCase):
                 start_r = -15
                 end_r = 0
 
+    def test_detect_possible_cells(self):
+        # Here we have a list of current cells and
+        # The cells that should surround them
+        current_cells = [[540, 225, 'green', False, 'green'],
+        [540, 575, 'red', False, 'red'], [715, 435, 'orange', False, 'orange']]
+
+        possible_back_cells = [[[523, 190, 'green', False, 'green'], [558, 190, 'green', False, 'green']],
+        [[523, 540, 'hexagon', False, 'hexagon'], [558, 540, 'hexagon', False, 'hexagon']],
+        [[698, 400, 'hexagon', False, 'hexagon'], None]]
+
+        possible_side_cells = [[[505, 225, 'green', False, 'green'], [575, 225, 'green', False, 'green']],
+        [[505, 575, 'red', False, 'red'], [575, 575, 'red', False, 'red']],
+        [[680, 435, 'hexagon', False, 'hexagon'], None]]
+
+        possible_front_cells = [[[523, 260, 'hexagon', False, 'hexagon'], [558, 260, 'hexagon', False, 'hexagon']],
+        [[523, 610, 'red', False, 'red'], [558, 610, 'red', False, 'red']],
+        [[697, 470, 'orange', False, 'orange'], [732, 470, 'orange', False, 'orange']]]
+
+
+        nr_current = 0
+
+        # Looping through the current cells and getting each cell alone
+        for current_cell in current_cells:
+            # Getting the cells surrounded the current cell and then
+            # comparing the results with the real results of our lists
+            surrounded_cells = test_game_rules.detect_possible_cells(current_cell)
+
+            self.assertEqual(surrounded_cells[0], possible_back_cells[nr_current])
+            self.assertEqual(surrounded_cells[1], possible_side_cells[nr_current])
+            self.assertEqual(surrounded_cells[2], possible_front_cells[nr_current])
+
+            # Moving to the next current cell
+            nr_current += 1
+
+
+
+
+
+
 
 
 
