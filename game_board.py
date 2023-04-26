@@ -22,7 +22,6 @@ class GameBoard:
             'white': [],
             'black': []
         }
-
         self.colors = {
             "red": (235, 14, 14),
             "green": (38, 189, 53),
@@ -33,7 +32,7 @@ class GameBoard:
             "hexagon": (175, 179, 176)
         }
         self.window = pg.display.set_mode((window_width,window_heigt))
-
+        
         # Specifying the center coordinates of the window, in order to centralize the game board
         self.center_of_x_coordinates = (window_width// 2)
         self.center_of_y_coordinates = (window_heigt//2)

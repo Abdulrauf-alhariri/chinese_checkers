@@ -4,11 +4,6 @@ import pygame as pg
 from pygame.locals import *
 from game_moves import GameMoves
 
-#Initializing the pygame module
-pg.init()
-
-#Setting the window caption
-pg.display.set_caption("Chinese checkers")
 
 class GameRules(GameMoves):
 
@@ -17,8 +12,6 @@ class GameRules(GameMoves):
         # Passing arguments to the child class
         super().__init__()
 
-        self.processing = False
-        self.run = True
         self.game_over = False
 
     def detect_cell(self, pos):
@@ -235,45 +228,3 @@ class GameRules(GameMoves):
 
                 # Returning the winer
                 return winner
-
-    def run_game(self):
-        self.window.fill((252, 207, 121, 255))
-
-        self.game_board_hexagon()
-        self.sex_players()
-        self.detect_cell([559, 261])
-
-
-        # The game loop will be running until the status of the run variable become false
-        while self.run:
-
-            # Getting the mouse position
-            mouse_pos = pg.mouse.get_pos()
-            for event in pg.event.get():
-
-                if event.type == QUIT:
-                    self.run = False
-
-                # Checking if the game board has been clicked
-                if event.type == pg.MOUSEBUTTONDOWN:
-
-                    # Checking if the player do not have any possible cells to move to yet
-                    if not self.processing:
-                        self.detect_possible_moves(mouse_pos)
-
-                    else:
-                        self.move_cell(mouse_pos)
-
-
-
-
-
-            self.update_game_board()
-            pg.display.update()
-
-        # Closing the playing window
-        pg.quit()
-
-if __name__ == "__main__":
-    set_up = GameRules()
-    set_up.run_game()
