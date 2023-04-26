@@ -113,14 +113,18 @@ class GameRules(GameMoves):
         return [[left_behind_cell, right_behind_cell],
         [left_cell, right_cell], [left_front_cell, right_front_cell]]
 
-    def detect_possible_moves(self, pos):
+    def detect_possible_moves(self, pos, turn):
         """This function will detect possible moves"""
 
         # Getting the current cell
         self.current_cell = self.detect_cell(pos)
+        players_turns = ["red", "green", "blue", "orange", "white", "black"]
+
+        player_turn = players_turns[turn]
+        print(turn)
 
         # Check that the givin position belongs to a player and not hexagon
-        if self.current_cell:
+        if self.current_cell and (self.current_cell[2] == player_turn):
             if self.current_cell[2] != "hexagon":
 
 
@@ -193,6 +197,10 @@ class GameRules(GameMoves):
             self.possible_cells = []
             self.processing = False
 
+            # This will return that the player made his move
+            return True
+        
+        return None
     def game_status(self, current_players):
         """This function will be responsible on tracking the game status
         each time any player make a move this function will check if any 

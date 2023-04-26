@@ -1,4 +1,5 @@
 """importing the pygame module"""
+# pylint: disable=no-member, undefined-variable, wildcard-import, unused-wildcard-import
 import pygame as pg
 from pygame.locals import *
 from game_rules import GameRules
@@ -17,10 +18,12 @@ class GameSetUp(GameRules):
     def __init__(self):
         super().__init__()
         self.processing = False
-        self.run = True
+        self.run = False
         self.font = pg.font.SysFont("Georgia", 30)
         self.play = False
         self.players_nr = None
+        self.player_turn = 0
+        self.window_backgroung_color = (252, 207, 121, 255)
 
     def draw_text(self, text, color, x_pos, y_pos):
         """This function will draw text"""
@@ -60,81 +63,99 @@ class GameSetUp(GameRules):
         # We return the button in order to check if the user click it
         return button
 
+    def start_game_page(self):
+        """This function will be called when the game just got started and waiting
+        for the player to click start"""
 
-    def start_menu(self):
-        """This function will create a little start menu for the game"""
-
-        while True:
-            self.window.fill((252, 207, 121, 255))
-            # We need to get the position of the mouse
-            mx,my = pg.mouse.get_pos()
+        # First we will create the start game button
+        # We will centerialize the button in the middle of the page
+        if not self.play:
+            self.window.fill(self.window_backgroung_color)
             start_button = None
+            pos_y = self.center_of_y_coordinates
+            start_button = self.button("Play", pos_y)
+
+            return start_button
+
+        return None
+
+    def game_play_options(self):
+        """This function will be called after the player clicked on start
+        and here the player will get to choose the play mode"""
+
+
+        if self.play and self.players_nr is None:
+            self.window.fill(self.window_backgroung_color)
             game_options = [[None, 2], [None, 4], [None, 6]]
+            # Here we check if the player started the game but did not
+            # yet choose the number of the players
+            pos_y = (self.center_of_y_coordinates * 2) // 3 // 2
+            game_options_text = ["2 players", "4 players", "6 players"]
 
-            # First we will create the start game button
-            # We will centerialize the button in the middle of the page
-            if not self.play:
-                pos_y = self.center_of_y_coordinates
-                start_button = self.button("Play", pos_y)
+            # Looping through the options and creating a button for each option
+            for option_nr in range(3):
+                option_text = game_options_text[option_nr]
+                button_pos_y = pos_y * (option_nr + 1)
 
-            if self.play and self.players_nr is None:
-                # Here we check if the player started the game but did not
-                # yet choose the number of the players
-                pos_y = (self.center_of_y_coordinates * 2) // 3 // 2
-                game_options_text = ["2 players", "4 players", "6 players"]
+                # Creating the button and saving it to the game options list
+                button = self.button(option_text, button_pos_y)
+                game_options[option_nr][0] = button
 
-                # Looping through the options and creating a button for each option
-                for option_nr in range(3):
-                    option_text = game_options_text[option_nr]
-                    button_pos_y = pos_y * (option_nr + 1)
+            return game_options
 
-                    # Creating the button and saving it to the game options list
-                    button = self.button(option_text, button_pos_y)
-                    game_options[option_nr][0] = button
-            
-            elif self.play and self.players_nr:
-                self.run_game()
+        return None
 
+    def button_event_checker(self, event, start_button, game_play_options):
+        """This function will be responsible for checking the game events"""
+        # Getting the mouse positions
+        mouse_x,mouse_y = pg.mouse.get_pos()
 
-
-
-            # Creating a simple game run to check if the player made any clicks
-            for event in pg.event.get():
-                if event.type == QUIT:
-                        pg.quit()
-                        
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        pg.quit()
-
-                if event.type == MOUSEBUTTONDOWN:
-
-                    # Here we check if the player did not start the game
-                    if start_button:
-                        # Here we check if the player did click the start game button
-                        if event.button == 1 and start_button.collidepoint(mx,my):
-                            self.play = True
-                            self.window.fill((252, 207, 121, 255))
-                    else:
-                        # Getting each option alone and check if it has been clicked
-                        for option in game_options:
-                            if event.button == 1 and option[0].collidepoint(mx, my):
-                                self.players_nr = option[1]
-                                
-
-
-
-            pg.display.update()
-            
-
-
+        # Checking if the game board has been clicked
+        # pylint: disable=no-member
+        if event.type == pg.MOUSEBUTTONDOWN:
+            # Here we check if the player did not start the game
+            if start_button:
+                # Here we check if the player did click the start game button
+                if event.button == 1 and start_button.collidepoint(mouse_x,mouse_y):
+                    self.play = True
+                    self.window.fill((252, 207, 121, 255))
+            elif game_play_options:
+                # Getting each option alone and check if it has been clicked
+                for option in game_play_options:
+                    if event.button == 1 and option[0].collidepoint(mouse_x,mouse_y):
+                        self.players_nr = option[1]
+                        self.run = True
 
     def set_up(self):
         """This function will setup the game board
         and the basic game stuff"""
 
-    def run_game(self):
-        self.window.fill((252, 207, 121, 255))
+        # This first bit of code will be respobsinble for running the start
+        # menu until the player choose the play mode
+        while True:
+
+            # Here we check if the player has choosen the play mode or not yet
+            # If yes we break this while loop and move forward
+            if self.run:
+                break
+
+            start_button = self.start_game_page()
+            game_play_options = self.game_play_options()
+
+            for event in pg.event.get():
+                # pylint: disable=no-member, undefined-variable
+                if event.type == QUIT:
+                    pg.quit()
+
+                # This function will check if the player still in the start page
+                # or in the choose game mode page and it will check if the player
+                # clicks on the options and excute an order then
+                self.button_event_checker(event, start_button, game_play_options)
+
+            pg.display.update()
+
+        # Here according to the givin play mode we create the cells
+        # of the game board
         self.game_board_hexagon()
         if self.players_nr == 2:
             self.two_players()
@@ -143,36 +164,51 @@ class GameSetUp(GameRules):
         else:
             self.sex_players()
 
+        # After that we created the cells then we will run the game
+        self.run_game()
+
+
+
+    def run_game(self):
+        """This function will be responsible for running the game"""
+        self.window.fill(self.window_backgroung_color)
 
         # The game loop will be running until the status of the run variable become false
         while self.run:
 
             # Getting the mouse position
             mouse_pos = pg.mouse.get_pos()
-            for event in pg.event.get():
 
+            for event in pg.event.get():
                 if event.type == QUIT:
                     self.run = False
 
-                if not self.play and self.players_nr is None:
-                    self.start_menu()
                 # Checking if the game board has been clicked
+                # pylint: disable=no-member
                 if event.type == pg.MOUSEBUTTONDOWN:
 
                     # Checking if the player do not have any possible cells to move to yet
                     if not self.processing:
-                        self.detect_possible_moves(mouse_pos)
+                        self.detect_possible_moves(mouse_pos, self.player_turn)
 
                     else:
-                        self.move_cell(mouse_pos)
+                        move = self.move_cell(mouse_pos)
+
+                        if move and self.player_turn == (self.players_nr -1) :
+                            self.player_turn = 0
+
+                        elif move:
+                            self.player_turn += 1
+
 
 
             self.update_game_board()
             pg.display.update()
 
         # Closing the playing window
+        # pylint: disable=no-member
         pg.quit()
 
 if __name__ == "__main__":
     set_up = GameSetUp()
-    set_up.start_menu()
+    set_up.set_up()
