@@ -1,4 +1,5 @@
 """Importing the necassary modules for the unit testing"""
+# pylint: disable=no-member, undefined-variable, wildcard-import, unused-wildcard-import
 import unittest
 from game_rules import GameRules
 
@@ -16,8 +17,10 @@ class TestGameRules(unittest.TestCase):
     def test_detect_cell(self):
         """Here we test the detect_cell function"""
         # Creating a list with possible results
-        possible_cells = [[558, 260, 'hexagon', False, "hexagon"], [715, 435, 'orange', False, "orange"],
-        [435, 505,'black', False, "black" ], [558, 610, 'red', False, "red"], [435, 295, 'blue', False, "blue"], [767, 260, 'white', False, "white"]]
+        possible_cells = [[558, 260, 'hexagon', False, "hexagon"],
+        [715, 435, 'orange', False, "orange"],
+        [435, 505,'black', False, "black" ], [558, 610, 'red', False, "red"],
+        [435, 295, 'blue', False, "blue"], [767, 260, 'white', False, "white"]]
 
 
         # Creating a dynamic loop of tests
@@ -28,11 +31,11 @@ class TestGameRules(unittest.TestCase):
             start_r = 0
             end_r = 16
 
-            for l in range(2):
-                for r in range(start_r, end_r):
+            for loop in range(2):
+                for radie in range(start_r, end_r):
                     # Increasing the position in the circumference range
-                    cell_x += r
-                    cell_y += r
+                    cell_x += radie
+                    cell_y += radie
 
                     # Trying to detect if the givin position is to the current cell
                     result = test_game_rules.detect_cell([cell_x, cell_y])
@@ -40,28 +43,32 @@ class TestGameRules(unittest.TestCase):
                     self.assertEqual(result, cell)
 
                     # Here we are resetting the cell coordinates for the next loop
-                    cell_x -= r
-                    cell_y -= r
+                    cell_x -= radie
+                    cell_y -= radie
 
                 # Changin the loop range to check to opposite side also
                 start_r = -15
                 end_r = 0
 
     def test_detect_possible_cells(self):
+        """This function will test the detect possible cells method"""
         # Here we have a list of current cells and
         # The cells that should surround them
         current_cells = [[540, 225, 'green', False, 'green'],
         [540, 575, 'red', False, 'red'], [715, 435, 'orange', False, 'orange']]
 
-        possible_back_cells = [[[523, 190, 'green', False, 'green'], [558, 190, 'green', False, 'green']],
+        possible_back_cells = [[[523, 190, 'green', False, 'green'],
+        [558, 190, 'green', False, 'green']],
         [[523, 540, 'hexagon', False, 'hexagon'], [558, 540, 'hexagon', False, 'hexagon']],
         [[698, 400, 'hexagon', False, 'hexagon'], None]]
 
-        possible_side_cells = [[[505, 225, 'green', False, 'green'], [575, 225, 'green', False, 'green']],
+        possible_side_cells = [[[505, 225, 'green', False, 'green'],
+        [575, 225, 'green', False, 'green']],
         [[505, 575, 'red', False, 'red'], [575, 575, 'red', False, 'red']],
         [[680, 435, 'hexagon', False, 'hexagon'], None]]
 
-        possible_front_cells = [[[523, 260, 'hexagon', False, 'hexagon'], [558, 260, 'hexagon', False, 'hexagon']],
+        possible_front_cells = [[[523, 260, 'hexagon', False, 'hexagon'],
+        [558, 260, 'hexagon', False, 'hexagon']],
         [[523, 610, 'red', False, 'red'], [558, 610, 'red', False, 'red']],
         [[697, 470, 'orange', False, 'orange'], [732, 470, 'orange', False, 'orange']]]
 

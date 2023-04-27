@@ -1,5 +1,6 @@
 """importing the pygame module"""
 # pylint: disable=no-member, undefined-variable, wildcard-import, unused-wildcard-import
+import time
 import pygame as pg
 from pygame.locals import *
 from game_rules import GameRules
@@ -130,6 +131,7 @@ class GameSetUp(GameRules):
         """This function will setup the game board
         and the basic game stuff"""
 
+        self.window.fill(self.window_backgroung_color)
         # This first bit of code will be respobsinble for running the start
         # menu until the player choose the play mode
         while True:
@@ -167,14 +169,49 @@ class GameSetUp(GameRules):
         # After that we created the cells then we will run the game
         self.run_game()
 
+    def game_over(self, winner):
+        """This function will be called when it is game over"""
+
+        self.window.fill(self.window_backgroung_color)
+
+        # We will display the winner on the screen
+        # This piece of code will tell whos turn is now
+        winner_statement = f"The winner is {winner}"
+        statement_posx = self.center_of_x_coordinates
+        statement_posy = 100
+        statement_color = (255, 255, 255)
+        self.draw_text(winner_statement, statement_color, statement_posx, statement_posy)
+
+        pg.display.update()
+
+        time.sleep(2)
+
+        # Closing the game
+        self.run = False
+
 
 
     def run_game(self):
         """This function will be responsible for running the game"""
-        self.window.fill(self.window_backgroung_color)
+
+
 
         # The game loop will be running until the status of the run variable become false
         while self.run:
+            self.window.fill(self.window_backgroung_color)
+
+            # This piece of code will tell whos turn is now
+            players_turn_statement = f"Now it's {self.players[self.player_turn]} turn"
+            statement_posx = (self.center_of_x_coordinates * 2) - 300
+            statement_posy = 100
+            statement_color = (255, 255, 255)
+            self.draw_text(players_turn_statement, statement_color, statement_posx, statement_posy)
+
+
+            # Checking if any player did win the game
+            winner = self.game_status(self.players[0: self.players_nr])
+            if winner:
+                self.game_over(winner)
 
             # Getting the mouse position
             mouse_pos = pg.mouse.get_pos()
@@ -189,6 +226,7 @@ class GameSetUp(GameRules):
 
                     # Checking if the player do not have any possible cells to move to yet
                     if not self.processing:
+
                         self.detect_possible_moves(mouse_pos, self.player_turn)
 
                     else:

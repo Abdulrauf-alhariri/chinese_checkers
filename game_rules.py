@@ -1,4 +1,5 @@
 """importing the pygame module"""
+# pylint: disable=no-member, undefined-variable, wildcard-import, unused-wildcard-import
 import traceback
 import pygame as pg
 from pygame.locals import *
@@ -12,7 +13,8 @@ class GameRules(GameMoves):
         # Passing arguments to the child class
         super().__init__()
 
-        self.game_over = False
+        self.game_over_status = False
+        self.players = ["red", "green", "blue", "orange", "white", "black"]
 
     def detect_cell(self, pos):
         """
@@ -118,10 +120,9 @@ class GameRules(GameMoves):
 
         # Getting the current cell
         self.current_cell = self.detect_cell(pos)
-        players_turns = ["red", "green", "blue", "orange", "white", "black"]
 
-        player_turn = players_turns[turn]
-        print(turn)
+
+        player_turn = self.players[turn]
 
         # Check that the givin position belongs to a player and not hexagon
         if self.current_cell and (self.current_cell[2] == player_turn):
@@ -140,6 +141,7 @@ class GameRules(GameMoves):
                     # Getting the type of the cell in order to get all the cells with
                     # Same type
                     cell_list_type = possible_cell[4]
+
 
                     # Getting the index of the possible cell in order to set it to active
                     cell_index = self.game_positions[cell_list_type].index(possible_cell)
@@ -199,20 +201,21 @@ class GameRules(GameMoves):
 
             # This will return that the player made his move
             return True
-        
+
         return None
+
     def game_status(self, current_players):
         """This function will be responsible on tracking the game status
-        each time any player make a move this function will check if any 
+        each time any player make a move this function will check if any
         player have won yet
         """
 
         # Getting the current player that are in the game
-        
+
 
         # Looping through the players list and getting each player alone
         for player in current_players:
-            
+
             # Getting the player territory
             territory = self.game_positions[player]
             game_over = True
@@ -228,7 +231,7 @@ class GameRules(GameMoves):
 
             # Checking if it is game over
             if game_over:
-                self.game_over = True
+                self.game_over_status = True
 
                 # Because all the positions have been colonized by the winner
                 # So any random cell of them will give us the type of the winner
@@ -236,3 +239,5 @@ class GameRules(GameMoves):
 
                 # Returning the winer
                 return winner
+
+        return None

@@ -1,6 +1,6 @@
 """importing the pygame module"""
+# pylint: disable=no-member, undefined-variable, wildcard-import, unused-wildcard-import
 import traceback
-import pygame as pg
 from pygame.locals import *
 from game_board import GameBoard
 

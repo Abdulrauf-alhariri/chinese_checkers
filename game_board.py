@@ -1,4 +1,5 @@
 """importing the pygame module"""
+# pylint: disable=no-member, undefined-variable, wildcard-import, unused-wildcard-import
 import pygame as pg
 from pygame.locals import *
 #Initializing the pygame module
@@ -32,7 +33,7 @@ class GameBoard:
             "hexagon": (175, 179, 176)
         }
         self.window = pg.display.set_mode((window_width,window_heigt))
-        
+
         # Specifying the center coordinates of the window, in order to centralize the game board
         self.center_of_x_coordinates = (window_width// 2)
         self.center_of_y_coordinates = (window_heigt//2)
@@ -246,10 +247,10 @@ class GameBoard:
         """This function will update the game board after every move"""
 
         # Iterating through the coordinates dictionary, getting key and value
-        for list in self.game_positions.values():
+        for coord_list in self.game_positions.values():
 
             # Looping through the coordinates list
-            for coordinates in list:
+            for coordinates in coord_list:
 
                 # Gets the positions and the color of the chess piece
                 x_position = coordinates[0]
