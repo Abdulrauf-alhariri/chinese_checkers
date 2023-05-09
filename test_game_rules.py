@@ -106,8 +106,7 @@ class TestGameRules(unittest.TestCase):
         # Game over to true
         resutl = test_game_rules.game_status(players)
         self.assertEqual(resutl, "green")
-        self.assertEqual(test_game_rules.game_over, True)
-
+        self.assertEqual(test_game_rules.game_over_status, True)
 
 
 

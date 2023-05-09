@@ -21,7 +21,7 @@ class GameMoves(GameBoard):
         """This function will detect cells that the current cell
         can move to accourding to which direction we are looking for"""
 
-        # Getting the nearst cell on the right of the current cell
+       
         list_in_possible_cells = dir_coords[0]
         cell_type = dir_coords[1]
 
@@ -89,7 +89,6 @@ class GameMoves(GameBoard):
             except TypeError:
                 print(traceback.format_exc())
                 break
-
 
     def detect_right_wing_moves(self, current_cell,func_detect_possible_cells ):
         """This function will detect the possible moves on the right side
